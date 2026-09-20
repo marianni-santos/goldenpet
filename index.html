@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoldenPet</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navbar: "var(--cor-navbar)",
+                        botao: "var(--cor-botao)",
+                        texto: "var(--cor-texto)",
+                        hover: "var(--cor-hover)",
+                        fundo: "var(--cor-fundo)"
+                    }
+                }
+            }
+        };
+    </script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-fundo text-texto">
+    <div id="navbar"></div>
+
+    <main class="flex min-h-[calc(100vh-80px)] items-center justify-center px-6">
+        <section class="w-full max-w-5xl text-center">
+            <h1 class="mb-4 text-4xl font-bold text-botao md:text-6xl">
+                Bem-vindo à GoldenPet
+            </h1>
+
+            <p class="mb-10 text-lg text-texto">
+                Agende já um de nossos serviços.
+            </p>
+
+            <div class="grid gap-6 md:grid-cols-3">
+                <a
+                    href="pages/agendamento.html"
+                    class="rounded-2xl bg-botao p-8 shadow-md transition hover:-translate-y-1 hover:bg-hover hover:shadow-lg"
+                >
+                    <i data-lucide="stethoscope" class="mx-auto mb-4 h-12 w-12 text-fundo"></i>
+
+                    <h2 class="mb-2 text-xl font-bold text-fundo">
+                        Consultas
+                    </h2>
+                </a>
+
+                <a
+                    href="#"
+                    class="rounded-2xl bg-botao p-8 shadow-md transition hover:-translate-y-1 hover:bg-hover hover:shadow-lg"
+                >
+                    <i data-lucide="microscope" class="mx-auto mb-4 h-12 w-12 text-fundo"></i>
+
+                    <h2 class="mb-2 text-xl font-bold text-fundo">
+                        Exames
+                    </h2>
+                </a>
+
+                <a
+                    href="#"
+                    class="rounded-2xl bg-botao p-8 shadow-md transition hover:-translate-y-1 hover:bg-hover hover:shadow-lg"
+                >
+                    <i data-lucide="syringe" class="mx-auto mb-4 h-12 w-12 text-fundo"></i>
+
+                    <h2 class="mb-2 text-xl font-bold text-fundo">
+                        Vacinas
+                    </h2>
+                </a>
+            </div>
+
+            <a
+                href="#"
+                class="mt-10 inline-block rounded-lg bg-botao px-8 py-3 font-semibold text-white transition hover:bg-hover"
+            >
+                Ver mais
+            </a>
+        </section>
+    </main>
+
+    <script src="js/components.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

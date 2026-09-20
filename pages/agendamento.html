@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento | GoldenPet</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-[var(--cor-fundo)] text-[var(--cor-texto)]">
+<div id="navbar"></div>
+
+    <main class="mx-auto max-w-7xl px-6 py-10">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <h1 class="text-3xl font-bold text-[#BF4100]">
+                Agendar consulta
+            </h1>
+
+            <button
+                type="button"
+                id="open-animal-modal"
+                class="flex items-center gap-2 rounded-lg bg-[#BF4100] px-5 py-2 font-semibold text-white transition hover:bg-[#9D3500]"
+            >
+                <i data-lucide="plus" class="h-5 w-5"></i>
+                Novo animal
+            </button>
+        </div>
+        <div class="mt-10 rounded-lg bg-white p-6">
+            <div class="grid gap-6 sm:grid-cols-2">
+                <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                    Nome do animal
+                    <select
+                        name="animal"
+                        id="animal-select"
+                        class="rounded-lg border border-[#D9D9D9] bg-white px-4 py-3 font-normal outline-none focus:border-[#BF4100]"
+                    >
+                        <option value="" disabled selected>Selecione o animal</option>
+                    </select>
+                </label>
+
+                <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                    Especialidade médica
+                    <select
+                        name="especialidade"
+                        id="specialty-select"
+                        class="rounded-lg border border-[#D9D9D9] bg-white px-4 py-3 font-normal outline-none focus:border-[#BF4100]"
+                    >
+                        <option value="" disabled selected>Selecione a especialidade</option>
+                        <option value="clinico-geral">Clínico geral</option>
+                        <option value="oftalmologia">Oftalmologia</option>
+                        <option value="dermatologia">Dermatologia</option>
+                        <option value="cardiologia">Cardiologia</option>
+                        <option value="ortopedia">Ortopedia</option>
+                        <option value="odontologia">Odontologia veterinária</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <div class="mt-10 rounded-lg bg-white p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="font-bold text-[#333333]">Selecione a data</h2>
+
+                <div class="flex gap-2">
+                    <button
+                        type="button"
+                        id="previous-dates"
+                        aria-label="Dia anterior"
+                        class="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] text-[#333333] transition hover:border-[#BF4100] hover:text-[#BF4100]"
+                    >
+                        <i data-lucide="chevron-left" class="h-4 w-4"></i>
+                    </button>
+                    <button
+                        type="button"
+                        id="next-dates"
+                        aria-label="Próximo dia"
+                        class="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] text-[#333333] transition hover:border-[#BF4100] hover:text-[#BF4100]"
+                    >
+                        <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="date-options" class="mt-4 flex flex-wrap gap-2"></div>
+        </div>
+
+        <div id="availability-list" class="mt-6 space-y-6"></div>
+
+        <div class="mt-6 flex justify-end">
+            <button
+                type="button"
+                id="waiting-list-button"
+                class="hidden rounded-lg bg-[#BF4100] px-6 py-3 font-semibold text-white transition hover:bg-[#9D3500]"
+            >
+                Lista de espera
+            </button>
+        </div>
+        
+    </main>
+
+    <dialog
+        id="waiting-list-modal"
+        class="w-[calc(100%-2rem)] max-w-sm rounded-xl p-0 shadow-xl backdrop:bg-black/40"
+    >
+        <div class="bg-white p-6">
+            <h2 class="text-center text-xl font-bold text-[#333333]">Lista de Espera</h2>
+            <p class="mx-auto mt-3 max-w-xs text-center text-xs text-[#555555]">
+                Selecione o dia desejado para ser avisado caso surja uma vaga.
+            </p>
+
+            <label class="mt-5 flex flex-col gap-2 text-sm font-semibold text-[#555555]">
+                Data desejada
+                <input
+                    type="date"
+                    id="waiting-list-date"
+                    class="rounded-lg border border-[#D9D9D9] px-3 py-2 outline-none focus:border-[#BF4100]"
+                >
+            </label>
+
+            <div class="mt-6 flex justify-center gap-3">
+                <button
+                    type="button"
+                    id="cancel-waiting-list"
+                    class="rounded-lg border border-[#777777] px-4 py-2 text-sm font-semibold text-[#555555] transition hover:border-[#BF4100] hover:text-[#BF4100]"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="button"
+                    id="confirm-waiting-list"
+                    class="rounded-lg bg-[#BF4100] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#9D3500]"
+                >
+                    Entrar na lista
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog
+        id="animal-modal"
+        class="w-[calc(100%-2rem)] max-w-lg rounded-xl p-0 shadow-xl backdrop:bg-black/40"
+    >
+        <div class="bg-white p-6 sm:p-8">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-[#333333]">Novo animal</h2>
+                    <p class="mt-1 text-sm text-[#666666]">Cadastre os dados do seu animal.</p>
+                </div>
+
+                <button
+                    type="button"
+                    id="close-animal-modal"
+                    aria-label="Fechar cadastro de animal"
+                    class="flex h-8 w-8 items-center justify-center rounded-full text-[#666666] transition hover:bg-[#F3F3F3] hover:text-[#BF4100]"
+                >
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+
+            <form id="animal-form" class="mt-6 space-y-4">
+                <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                    Nome <span class="text-[#BF4100]">*</span>
+                    <input
+                        type="text"
+                        name="nome"
+                        required
+                        placeholder="Digite o nome do animal"
+                        class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]"
+                    >
+                </label>
+
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Espécie
+                        <select
+                            name="especie"
+                            class="rounded-lg border border-[#D9D9D9] bg-white px-4 py-3 font-normal outline-none focus:border-[#BF4100]"
+                        >
+                            <option value="" selected>Selecione a espécie</option>
+                            <option value="cao">Cão</option>
+                            <option value="gato">Gato</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </label>
+
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Raça
+                        <input
+                            type="text"
+                            name="raca"
+                            placeholder="Digite a raça"
+                            class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]"
+                        >
+                    </label>
+
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Idade
+                        <input
+                            type="number"
+                            name="idade"
+                            min="0"
+                            placeholder="Ex.: 3"
+                            class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]"
+                        >
+                    </label>
+
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Peso (kg)
+                        <input
+                            type="number"
+                            name="peso"
+                            min="0"
+                            step="0.1"
+                            placeholder="Ex.: 12,5"
+                            class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]"
+                        >
+                    </label>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button
+                        type="button"
+                        id="cancel-animal-modal"
+                        class="rounded-lg border border-[#D9D9D9] px-5 py-3 font-semibold text-[#666666] transition hover:border-[#BF4100] hover:text-[#BF4100]"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="submit"
+                        class="rounded-lg bg-[#BF4100] px-5 py-3 font-semibold text-white transition hover:bg-[#9D3500]"
+                    >
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog
+        id="professional-modal"
+        class="w-[calc(100%-2rem)] max-w-lg rounded-2xl p-0 shadow-xl backdrop:bg-black/40"
+    >
+        <div class="bg-white p-6 sm:p-8">
+            <div class="flex justify-end">
+                <button
+                    type="button"
+                    id="close-professional-modal"
+                    aria-label="Fechar perfil do profissional"
+                    class="flex h-8 w-8 items-center justify-center rounded-full text-[#BF4100] transition hover:bg-[#FFF3E8]"
+                >
+                    <i data-lucide="x" class="h-6 w-6"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div id="professional-initials" class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#BF4100] font-bold text-white"></div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 id="professional-name" class="text-lg font-bold text-[#333333]"></h2>
+                        <span id="professional-registration" class="text-xs text-[#333333]"></span>
+                    </div>
+                    <span id="professional-specialty" class="mt-1 inline-block rounded-full bg-[#FFF3D4] px-2 py-1 text-[10px] font-semibold text-[#BF4100]"></span>
+                </div>
+            </div>
+
+            <section class="mt-8">
+                <h3 class="text-[10px] uppercase text-[#777777]">Sobre</h3>
+                <p id="professional-about" class="mt-1 text-sm text-[#333333]"></p>
+            </section>
+
+            <section class="mt-5">
+                <div class="flex items-center gap-2">
+                    <span id="professional-rating" class="text-lg font-bold text-[#333333]"></span>
+                    <span class="text-xs text-[#999999]">/ 5</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-[#BF4100]">
+                    <span aria-label="5 estrelas">★★★★★</span>
+                    <span id="professional-review-count" class="text-[10px] text-[#999999]"></span>
+                </div>
+            </section>
+
+            <section class="mt-5">
+                <h3 class="text-[10px] uppercase text-[#777777]">Comentários</h3>
+                <div id="professional-reviews" class="mt-2 space-y-2"></div>
+            </section>
+        </div>
+    </dialog>
+
+    <dialog
+        id="booking-modal"
+        class="w-[calc(100%-2rem)] max-w-md rounded-2xl p-0 shadow-xl backdrop:bg-black/40"
+    >
+        <div class="bg-white p-6 sm:p-8">
+            <h2 class="text-center text-xl font-bold text-[#333333]">Resumo do Agendamento</h2>
+            <p id="booking-specialty" class="mx-auto mt-3 w-fit rounded-full bg-[#FFF3E8] px-5 py-1 text-xs font-semibold text-[#BF4100]"></p>
+
+            <div class="mt-6 divide-y divide-[#F0F0F0]">
+                <div class="flex gap-3 py-3">
+                    <i data-lucide="paw-print" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                    <div>
+                        <p class="text-[10px] text-[#777777]">Nome do Animal</p>
+                        <p id="booking-animal" class="font-semibold text-[#333333]"></p>
+                    </div>
+                </div>
+                <div class="flex gap-3 py-3">
+                    <i data-lucide="stethoscope" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                    <div>
+                        <p class="text-[10px] text-[#777777]">Veterinário</p>
+                        <p id="booking-professional" class="font-semibold text-[#333333]"></p>
+                    </div>
+                </div>
+                <div class="flex gap-3 py-3">
+                    <i data-lucide="calendar-days" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                    <div>
+                        <p class="text-[10px] text-[#777777]">Data</p>
+                        <p id="booking-date" class="font-semibold text-[#333333]"></p>
+                    </div>
+                </div>
+                <div class="flex gap-3 py-3">
+                    <i data-lucide="clock-3" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                    <div>
+                        <p class="text-[10px] text-[#777777]">Horário</p>
+                        <p id="booking-time" class="font-semibold text-[#333333]"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-center gap-5">
+                <button
+                    type="button"
+                    id="cancel-booking"
+                    class="rounded-lg border border-[#777777] px-5 py-2 font-semibold text-[#555555] transition hover:border-[#BF4100] hover:text-[#BF4100]"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="button"
+                    id="confirm-booking"
+                    class="rounded-lg bg-[#BF4100] px-5 py-2 font-semibold text-white transition hover:bg-[#9D3500]"
+                >
+                    Agendar
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+<script src="../js/components.js"></script>
+<script src="../js/mock-data.js"></script>
+<script>
+    lucide.createIcons();
+
+    const { availabilityByDate, professionalProfiles } = window.goldenPetMockData;
+
+    const weekdayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const dateOptions = document.querySelector('#date-options');
+    const availabilityList = document.querySelector('#availability-list');
+    const animalSelect = document.querySelector('#animal-select');
+    const specialtySelect = document.querySelector('#specialty-select');
+    const waitingListButton = document.querySelector('#waiting-list-button');
+    const animalsStorageKey = 'goldenpet.animals';
+
+    const getStoredAnimals = () => {
+        try {
+            return JSON.parse(localStorage.getItem(animalsStorageKey)) || [];
+        } catch (error) {
+            return [];
+        }
+    };
+
+    const saveAnimals = (animals) => {
+        localStorage.setItem(animalsStorageKey, JSON.stringify(animals));
+    };
+
+    const renderAnimalOptions = (selectedAnimalId = '') => {
+        const animals = getStoredAnimals();
+
+        animalSelect.innerHTML = `
+            <option value="" disabled ${selectedAnimalId ? '' : 'selected'}>Selecione o animal</option>
+            ${animals.map((animal) => `
+                <option value="${animal.id}" ${animal.id === selectedAnimalId ? 'selected' : ''}>${animal.nome}</option>
+            `).join('')}
+        `;
+
+        animalSelect.value = selectedAnimalId;
+    };
+    let visibleStartDate = new Date(2026, 6, 26);
+    let selectedDate = '2026-07-27';
+
+    const toDateKey = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const formatDate = (date) => `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+    const renderAvailability = () => {
+        const selectedAnimal = animalSelect.value;
+        const selectedSpecialty = specialtySelect.value;
+
+        waitingListButton.classList.toggle('hidden', !selectedAnimal || !selectedSpecialty);
+
+        if (!selectedAnimal || !selectedSpecialty) {
+            availabilityList.innerHTML = `
+                <p class="py-8 text-center font-semibold text-[#666666]">
+                    Selecione um animal e uma especialidade
+                </p>
+            `;
+            return;
+        }
+
+        const professionals = (availabilityByDate[selectedDate] || []).filter((professional) => {
+            return !selectedSpecialty || professional.specialtyId === selectedSpecialty;
+        });
+
+        if (professionals.length === 0) {
+            availabilityList.innerHTML = `
+                <div class="rounded-lg bg-white p-6 text-center text-[#666666]">
+                    Nenhum horário disponível para esta data e especialidade.
+                </div>
+            `;
+            return;
+        }
+
+        availabilityList.innerHTML = professionals.map((professional) => `
+            <div class="rounded-lg bg-white p-6">
+                <div class="flex items-center justify-between gap-4">
+                    <h2 class="font-bold text-[#333333]">${professional.name} - ${professional.specialty}</h2>
+                    <button
+                        type="button"
+                        data-professional-id="${professional.id}"
+                        aria-label="Ver perfil de ${professional.name}"
+                        class="flex h-8 w-8 items-center justify-center rounded text-[#BF4100] transition hover:bg-[#FFF3E8]"
+                    >
+                        <i data-lucide="clipboard-list" class="h-6 w-6"></i>
+                    </button>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-3">
+                    ${professional.times.map((time) => `
+                        <button
+                            type="button"
+                            data-booking-professional="${professional.name}"
+                            data-booking-specialty="${professional.specialty}"
+                            data-booking-time="${time}"
+                            class="rounded-lg bg-[#BF4100] px-5 py-2 font-semibold text-white transition hover:bg-[#9D3500]"
+                        >
+                            ${time}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+
+        lucide.createIcons();
+
+        availabilityList.querySelectorAll('[data-professional-id]').forEach((button) => {
+            button.addEventListener('click', () => openProfessionalModal(button.dataset.professionalId));
+        });
+
+        availabilityList.querySelectorAll('[data-booking-time]').forEach((button) => {
+            button.addEventListener('click', () => openBookingModal(button.dataset));
+        });
+    };
+
+    const professionalModal = document.querySelector('#professional-modal');
+
+    const openProfessionalModal = (professionalId) => {
+        const professional = professionalProfiles[professionalId];
+
+        if (!professional) {
+            return;
+        }
+
+        document.querySelector('#professional-initials').textContent = professional.initials;
+        document.querySelector('#professional-name').textContent = professional.name;
+        document.querySelector('#professional-registration').textContent = `- ${professional.registration}`;
+        document.querySelector('#professional-specialty').textContent = professional.specialty;
+        document.querySelector('#professional-about').textContent = professional.about;
+        document.querySelector('#professional-rating').textContent = professional.rating;
+        document.querySelector('#professional-review-count').textContent = `${professional.reviewsCount} avaliações`;
+        document.querySelector('#professional-reviews').innerHTML = professional.reviews.map((review) => `
+            <article class="rounded-xl bg-[#F7F7F5] p-3 shadow-sm">
+                <div class="text-xs text-[#BF4100]">★★★★★</div>
+                <p class="mt-1 text-xs italic text-[#333333]">“${review.text}”</p>
+                <p class="mt-2 text-[10px] text-[#666666]">— ${review.author}</p>
+            </article>
+        `).join('');
+
+        professionalModal.showModal();
+    };
+
+    const closeProfessionalModal = () => {
+        professionalModal.close();
+    };
+
+    document.querySelector('#close-professional-modal').addEventListener('click', closeProfessionalModal);
+    professionalModal.addEventListener('click', (event) => {
+        if (event.target === professionalModal) {
+            closeProfessionalModal();
+        }
+    });
+
+    const waitingListModal = document.querySelector('#waiting-list-modal');
+    const waitingListDate = document.querySelector('#waiting-list-date');
+
+    waitingListButton.addEventListener('click', () => {
+        waitingListDate.value = selectedDate;
+        waitingListModal.showModal();
+    });
+
+    const closeWaitingListModal = () => {
+        waitingListModal.close();
+    };
+
+    document.querySelector('#cancel-waiting-list').addEventListener('click', closeWaitingListModal);
+    waitingListModal.addEventListener('click', (event) => {
+        if (event.target === waitingListModal) {
+            closeWaitingListModal();
+        }
+    });
+
+    document.querySelector('#confirm-waiting-list').addEventListener('click', () => {
+        if (!waitingListDate.value) {
+            waitingListDate.reportValidity();
+            return;
+        }
+
+        const waitingList = JSON.parse(localStorage.getItem('goldenpet.waitingList') || '[]');
+        waitingList.push({
+            animalId: animalSelect.value,
+            specialty: specialtySelect.value,
+            date: waitingListDate.value,
+            createdAt: new Date().toISOString()
+        });
+        localStorage.setItem('goldenpet.waitingList', JSON.stringify(waitingList));
+        closeWaitingListModal();
+    });
+
+    const bookingModal = document.querySelector('#booking-modal');
+    let selectedBooking = null;
+
+    const openBookingModal = ({ bookingProfessional, bookingSpecialty, bookingTime }) => {
+        const animal = getStoredAnimals().find((storedAnimal) => storedAnimal.id === animalSelect.value);
+        const date = new Date(`${selectedDate}T00:00:00`);
+        const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+
+        document.querySelector('#booking-specialty').textContent = `Consulta — ${bookingSpecialty}`;
+        document.querySelector('#booking-animal').textContent = animal ? animal.nome : 'Animal selecionado';
+        document.querySelector('#booking-professional').textContent = bookingProfessional;
+        document.querySelector('#booking-date').textContent = formattedDate;
+        document.querySelector('#booking-time').textContent = bookingTime;
+        selectedBooking = {
+            animal: animal ? animal.nome : 'Animal selecionado',
+            specialty: bookingSpecialty,
+            professional: bookingProfessional,
+            date: formattedDate,
+            time: bookingTime
+        };
+        bookingModal.showModal();
+    };
+
+    const closeBookingModal = () => {
+        bookingModal.close();
+    };
+
+    document.querySelector('#cancel-booking').addEventListener('click', closeBookingModal);
+    document.querySelector('#confirm-booking').addEventListener('click', () => {
+        if (!selectedBooking) {
+            return;
+        }
+
+        const appointments = JSON.parse(localStorage.getItem('goldenpet.appointments') || '[]');
+        const appointment = {
+            ...selectedBooking,
+            protocol: `20261103-${String(appointments.length + 87452).padStart(5, '0')}`
+        };
+
+        localStorage.setItem('goldenpet.appointments', JSON.stringify([...appointments, appointment]));
+        window.location.href = 'consultas.html';
+    });
+    bookingModal.addEventListener('click', (event) => {
+        if (event.target === bookingModal) {
+            closeBookingModal();
+        }
+    });
+
+    const renderDates = () => {
+        dateOptions.innerHTML = Array.from({ length: 5 }, (_, index) => {
+            const date = new Date(visibleStartDate);
+            date.setDate(visibleStartDate.getDate() + index);
+            const dateKey = toDateKey(date);
+            const isSelected = dateKey === selectedDate;
+            const selectedClasses = isSelected
+                ? 'bg-[#BF4100] text-white'
+                : 'bg-[#F3F3F3] text-[#666666]';
+            const selectedDayClasses = isSelected ? '' : 'text-[#333333]';
+
+            return `
+                <button
+                    type="button"
+                    data-date="${dateKey}"
+                    class="rounded-xl px-5 py-3 text-center text-xs ${selectedClasses}"
+                >
+                    <span class="block">${weekdayNames[date.getDay()]}</span>
+                    <strong class="text-sm ${selectedDayClasses}">${formatDate(date)}</strong>
+                </button>
+            `;
+        }).join('');
+
+        dateOptions.querySelectorAll('[data-date]').forEach((button) => {
+            button.addEventListener('click', () => {
+                selectedDate = button.dataset.date;
+                renderDates();
+                renderAvailability();
+            });
+        });
+    };
+
+    document.querySelector('#previous-dates').addEventListener('click', () => {
+        visibleStartDate.setDate(visibleStartDate.getDate() - 5);
+        selectedDate = toDateKey(visibleStartDate);
+        renderDates();
+        renderAvailability();
+    });
+
+    document.querySelector('#next-dates').addEventListener('click', () => {
+        visibleStartDate.setDate(visibleStartDate.getDate() + 5);
+        selectedDate = toDateKey(visibleStartDate);
+        renderDates();
+        renderAvailability();
+    });
+
+    animalSelect.addEventListener('change', renderAvailability);
+    specialtySelect.addEventListener('change', renderAvailability);
+
+    renderDates();
+    renderAnimalOptions();
+    renderAvailability();
+
+    const animalModal = document.querySelector('#animal-modal');
+    const animalForm = document.querySelector('#animal-form');
+
+    document.querySelector('#open-animal-modal').addEventListener('click', () => {
+        animalModal.showModal();
+    });
+
+    const closeAnimalModal = () => {
+        animalModal.close();
+    };
+
+    document.querySelector('#close-animal-modal').addEventListener('click', closeAnimalModal);
+    document.querySelector('#cancel-animal-modal').addEventListener('click', closeAnimalModal);
+
+    animalModal.addEventListener('click', (event) => {
+        if (event.target === animalModal) {
+            closeAnimalModal();
+        }
+    });
+
+    animalForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (animalForm.checkValidity()) {
+            const formData = new FormData(animalForm);
+            const animals = getStoredAnimals();
+            const newAnimal = {
+                id: `animal-${Date.now()}`,
+                nome: formData.get('nome').trim(),
+                especie: formData.get('especie'),
+                raca: formData.get('raca').trim(),
+                idade: formData.get('idade'),
+                peso: formData.get('peso')
+            };
+
+            saveAnimals([...animals, newAnimal]);
+            renderAnimalOptions();
+            renderAvailability();
+            closeAnimalModal();
+            animalForm.reset();
+        } else {
+            animalForm.reportValidity();
+        }
+    });
+</script>
+</body>
+</html>

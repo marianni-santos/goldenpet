@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus animais | GoldenPet</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-[var(--cor-fundo)] text-[var(--cor-texto)]">
+    <div id="navbar"></div>
+
+    <main class="mx-auto max-w-6xl px-6 py-10">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-[#333333]">Meus animais</h1>
+                <p class="mt-1 text-sm text-[#666666]">Confira os animais cadastrados.</p>
+            </div>
+
+            <button
+                type="button"
+                id="open-animal-modal"
+                class="flex items-center justify-center gap-2 rounded-lg bg-[#BF4100] px-5 py-2 font-semibold text-white transition hover:bg-[#9D3500]"
+            >
+                <i data-lucide="plus" class="h-5 w-5"></i>
+                Novo animal
+            </button>
+        </div>
+
+        <div id="animals-list" class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </main>
+
+    <dialog
+        id="animal-modal"
+        class="w-[calc(100%-2rem)] max-w-lg rounded-xl p-0 shadow-xl backdrop:bg-black/40"
+    >
+        <div class="bg-white p-6 sm:p-8">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-[#333333]">Novo animal</h2>
+                    <p class="mt-1 text-sm text-[#666666]">Cadastre os dados do seu animal.</p>
+                </div>
+                <button
+                    type="button"
+                    id="close-animal-modal"
+                    aria-label="Fechar cadastro de animal"
+                    class="flex h-8 w-8 items-center justify-center rounded-full text-[#666666] transition hover:bg-[#F3F3F3] hover:text-[#BF4100]"
+                >
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+
+            <form id="animal-form" novalidate class="mt-6 space-y-4">
+                <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                    Nome
+                    <input type="text" name="nome" required placeholder="Digite o nome do animal" class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]">
+                </label>
+
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Espécie
+                        <select name="especie" required class="rounded-lg border border-[#D9D9D9] bg-white px-4 py-3 font-normal outline-none focus:border-[#BF4100]">
+                            <option value="" selected>Selecione a espécie</option>
+                            <option value="cao">Cão</option>
+                            <option value="gato">Gato</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Raça
+                        <input type="text" name="raca" placeholder="Digite a raça" class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]">
+                    </label>
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Idade
+                        <input type="number" name="idade" min="0" placeholder="Ex.: 3" class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]">
+                    </label>
+                    <label class="flex flex-col gap-2 font-semibold text-[#666666]">
+                        Peso (kg)
+                        <input type="number" name="peso" min="0" step="0.1" placeholder="Ex.: 12,5" class="rounded-lg border border-[#D9D9D9] px-4 py-3 font-normal outline-none placeholder:text-[#999999] focus:border-[#BF4100]">
+                    </label>
+                </div>
+
+                <p id="animal-form-error" role="alert" class="hidden rounded-lg bg-[#FFF0ED] px-4 py-3 text-sm font-semibold text-[#B42318]">
+                    Erro ao cadastrar animal.
+                </p>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" id="cancel-animal-modal" class="rounded-lg border border-[#D9D9D9] px-5 py-3 font-semibold text-[#666666] transition hover:border-[#BF4100] hover:text-[#BF4100]">Cancelar</button>
+                    <button type="submit" class="rounded-lg bg-[#BF4100] px-5 py-3 font-semibold text-white transition hover:bg-[#9D3500]">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <script src="../js/components.js"></script>
+    <script>
+        lucide.createIcons();
+
+        const animalsList = document.querySelector('#animals-list');
+        const animalModal = document.querySelector('#animal-modal');
+        const animalForm = document.querySelector('#animal-form');
+        const animalFormError = document.querySelector('#animal-form-error');
+        const animalsStorageKey = 'goldenpet.animals';
+
+        const speciesNames = {
+            cao: 'Cão',
+            gato: 'Gato',
+            outro: 'Outro'
+        };
+
+        const getAnimals = () => {
+            try {
+                return JSON.parse(localStorage.getItem(animalsStorageKey) || '[]');
+            } catch (error) {
+                return [];
+            }
+        };
+
+        const renderAnimals = () => {
+            const animals = getAnimals();
+
+            if (animals.length === 0) {
+                animalsList.innerHTML = `
+                    <div class="rounded-lg bg-white p-8 text-center text-[#666666] sm:col-span-2 lg:col-span-3">
+                        <i data-lucide="paw-print" class="mx-auto mb-3 h-10 w-10 text-[#BF4100]"></i>
+                        <p class="font-semibold">Nenhum animal cadastrado.</p>
+                        <p class="mt-1 text-sm">Cadastre seu primeiro animal para começar.</p>
+                    </div>
+                `;
+            } else {
+                animalsList.innerHTML = animals.map((animal) => `
+                <article class="rounded-lg bg-white p-6 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF3E8] text-[#BF4100]">
+                            <i data-lucide="paw-print" class="h-6 w-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-[#333333]">${animal.nome}</h2>
+                            <p class="text-sm text-[#666666]">${speciesNames[animal.especie] || animal.especie || 'Espécie não informada'}</p>
+                        </div>
+                    </div>
+
+                    <dl class="mt-5 divide-y divide-[#F0F0F0]">
+                        <div class="flex justify-between gap-4 py-2 text-sm">
+                            <dt class="text-[#777777]">Raça</dt>
+                            <dd class="font-semibold text-[#333333]">${animal.raca || 'Não informada'}</dd>
+                        </div>
+                        <div class="flex justify-between gap-4 py-2 text-sm">
+                            <dt class="text-[#777777]">Idade</dt>
+                            <dd class="font-semibold text-[#333333]">${animal.idade ? `${animal.idade} anos` : 'Não informada'}</dd>
+                        </div>
+                        <div class="flex justify-between gap-4 py-2 text-sm">
+                            <dt class="text-[#777777]">Peso</dt>
+                            <dd class="font-semibold text-[#333333]">${animal.peso ? `${animal.peso} kg` : 'Não informado'}</dd>
+                        </div>
+                    </dl>
+                </article>
+                `).join('');
+            }
+
+            lucide.createIcons();
+        };
+
+        const closeAnimalModal = () => animalModal.close();
+
+        document.querySelector('#open-animal-modal').addEventListener('click', () => {
+            animalModal.showModal();
+        });
+
+        document.querySelector('#close-animal-modal').addEventListener('click', closeAnimalModal);
+        document.querySelector('#cancel-animal-modal').addEventListener('click', closeAnimalModal);
+
+        animalForm.addEventListener('input', () => {
+            animalFormError.classList.add('hidden');
+        });
+
+        animalForm.addEventListener('change', () => {
+            animalFormError.classList.add('hidden');
+        });
+
+        animalModal.addEventListener('click', (event) => {
+            if (event.target === animalModal) {
+                closeAnimalModal();
+            }
+        });
+
+        animalForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(animalForm);
+            const name = formData.get('nome').trim();
+            const species = formData.get('especie');
+
+            if (!name || !species) {
+                animalFormError.classList.remove('hidden');
+                return;
+            }
+
+            const animal = {
+                id: `animal-${Date.now()}`,
+                nome: name,
+                especie: formData.get('especie'),
+                raca: formData.get('raca').trim(),
+                idade: formData.get('idade'),
+                peso: formData.get('peso')
+            };
+
+            localStorage.setItem(animalsStorageKey, JSON.stringify([...getAnimals(), animal]));
+            renderAnimals();
+            animalForm.reset();
+            animalFormError.classList.add('hidden');
+            closeAnimalModal();
+        });
+
+        renderAnimals();
+    </script>
+</body>
+</html>

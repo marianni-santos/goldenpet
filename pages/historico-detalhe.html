@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do atendimento | GoldenPet</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-[var(--cor-fundo)] text-[var(--cor-texto)]">
+    <div id="navbar"></div>
+
+    <main id="service-detail" class="mx-auto max-w-5xl px-6 py-10"></main>
+
+    <script src="../js/components.js"></script>
+    <script src="../js/mock-data.js"></script>
+    <script>
+        const detailContainer = document.querySelector('#service-detail');
+        const serviceId = new URLSearchParams(window.location.search).get('id');
+        const service = window.goldenPetMockData.completedServices.find((item) => item.id === serviceId);
+
+        if (!service) {
+            detailContainer.innerHTML = `
+                <div class="rounded-lg bg-white p-8 text-center shadow-sm">
+                    <i data-lucide="file-x-2" class="mx-auto mb-3 h-10 w-10 text-[#BF4100]"></i>
+                    <h1 class="text-xl font-bold text-[#333333]">Atendimento não encontrado</h1>
+                    <p class="mt-2 text-sm text-[#666666]">O serviço solicitado não está disponível.</p>
+                    <a href="historico.html" class="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#BF4100] px-5 py-3 font-semibold text-white transition hover:bg-[#9D3500]">
+                        <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                        Voltar ao histórico
+                    </a>
+                </div>
+            `;
+        } else {
+            detailContainer.innerHTML = `
+                <a href="historico.html" class="inline-flex items-center gap-2 text-sm font-semibold text-[#BF4100] transition hover:text-[#9D3500]">
+                    <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                    Voltar ao histórico
+                </a>
+
+                <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-[#BF4100]">Detalhes do atendimento</p>
+                        <h1 class="mt-1 text-2xl font-bold text-[#333333]">${service.service} — ${service.specialty}</h1>
+                        <p class="mt-1 text-sm text-[#666666]">Atendimento realizado para ${service.animal}</p>
+                    </div>
+                    <span class="inline-flex w-fit items-center gap-2 rounded-full bg-[#FFF3E8] px-4 py-2 text-sm font-semibold text-[#BF4100]">
+                        <i data-lucide="check-circle-2" class="h-4 w-4"></i>
+                        Concluído
+                    </span>
+                </div>
+
+                <section class="mt-8 rounded-lg bg-white p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-[#333333]">Resumo do atendimento</h2>
+                    <dl class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                        <div class="flex gap-3"><i data-lucide="calendar-days" class="h-5 w-5 text-[#BF4100]"></i><div><dt class="text-xs text-[#777777]">Data</dt><dd class="mt-1 font-semibold text-[#333333]">${service.date}</dd></div></div>
+                        <div class="flex gap-3"><i data-lucide="clock-3" class="h-5 w-5 text-[#BF4100]"></i><div><dt class="text-xs text-[#777777]">Horário</dt><dd class="mt-1 font-semibold text-[#333333]">${service.time}</dd></div></div>
+                        <div class="flex gap-3"><i data-lucide="stethoscope" class="h-5 w-5 text-[#BF4100]"></i><div><dt class="text-xs text-[#777777]">Veterinário</dt><dd class="mt-1 font-semibold text-[#333333]">${service.professional}</dd></div></div>
+                        <div class="flex gap-3"><i data-lucide="file-text" class="h-5 w-5 text-[#BF4100]"></i><div><dt class="text-xs text-[#777777]">Protocolo</dt><dd class="mt-1 font-semibold text-[#333333]">${service.protocol}</dd></div></div>
+                    </dl>
+                    <p class="mt-6 border-t border-[#F0F0F0] pt-5 text-sm text-[#666666]">${service.summary}</p>
+                </section>
+
+                <div class="mt-6 grid gap-6 lg:grid-cols-2">
+                    <section class="rounded-lg bg-white p-6 shadow-sm">
+                        <div class="flex items-center gap-3"><i data-lucide="microscope" class="h-5 w-5 text-[#BF4100]"></i><h2 class="text-lg font-bold text-[#333333]">Exames realizados</h2></div>
+                        <div class="mt-5 divide-y divide-[#F0F0F0]">
+                            ${service.exams.map((exam) => `
+                                <div class="py-4 first:pt-0 last:pb-0">
+                                    <div class="flex items-start justify-between gap-4"><p class="font-semibold text-[#333333]">${exam.name}</p><span class="text-xs text-[#777777]">${exam.date}</span></div>
+                                    <p class="mt-1 text-sm text-[#666666]">${exam.result}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+
+                    <section class="rounded-lg bg-white p-6 shadow-sm">
+                        <div class="flex items-center gap-3"><i data-lucide="folder-open" class="h-5 w-5 text-[#BF4100]"></i><h2 class="text-lg font-bold text-[#333333]">Arquivos digitais</h2></div>
+                        <div class="mt-5 space-y-3">
+                            ${service.files.map((file) => `
+                                <div class="flex items-center justify-between gap-3 rounded-lg border border-[#EEEEEE] p-3">
+                                    <div class="flex min-w-0 items-center gap-3"><i data-lucide="file-down" class="h-5 w-5 shrink-0 text-[#BF4100]"></i><div class="min-w-0"><p class="truncate text-sm font-semibold text-[#333333]">${file.name}</p><p class="text-xs text-[#777777]">${file.type} · ${file.size}</p></div></div>
+                                    <button type="button" data-file-name="${file.name}" aria-label="Baixar ${file.name}" class="shrink-0 text-[#BF4100] transition hover:text-[#9D3500]"><i data-lucide="download" class="h-5 w-5"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                </div>
+
+                <section class="mt-6 rounded-lg bg-white p-6 shadow-sm">
+                    <div class="flex items-center gap-3"><i data-lucide="clipboard-plus" class="h-5 w-5 text-[#BF4100]"></i><h2 class="text-lg font-bold text-[#333333]">Orientações</h2></div>
+                    <p class="mt-4 text-sm leading-6 text-[#666666]">${service.notes}</p>
+                </section>
+            `;
+        }
+
+        lucide.createIcons();
+
+        document.querySelectorAll('[data-file-name]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const fileName = button.dataset.fileName;
+                const fileContent = `Arquivo digital mocado da GoldenPet\n${fileName}`;
+                const fileUrl = URL.createObjectURL(new Blob([fileContent], { type: 'text/plain' }));
+                const downloadLink = document.createElement('a');
+                downloadLink.href = fileUrl;
+                downloadLink.download = `${fileName}.txt`;
+                downloadLink.click();
+                URL.revokeObjectURL(fileUrl);
+            });
+        });
+    </script>
+</body>
+</html>

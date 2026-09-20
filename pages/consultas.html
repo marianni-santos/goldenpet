@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas Agendadas | GoldenPet</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-[var(--cor-fundo)] text-[var(--cor-texto)]">
+    <div id="navbar"></div>
+
+    <main class="mx-auto max-w-6xl px-6 py-10">
+        <h1 class="text-2xl font-bold text-[#333333]">Consultas Agendadas</h1>
+        <div id="appointments-list" class="mt-6 grid gap-6 md:grid-cols-2"></div>
+    </main>
+
+    <script src="../js/components.js"></script>
+    <script>
+        lucide.createIcons();
+
+        const appointmentsList = document.querySelector('#appointments-list');
+        let appointments = JSON.parse(localStorage.getItem('goldenpet.appointments') || '[]');
+
+        const renderAppointments = () => {
+            if (appointments.length === 0) {
+                appointmentsList.innerHTML = `
+                    <div class="rounded-lg bg-white p-8 text-center text-[#666666] md:col-span-2">
+                        Nenhuma consulta agendada.
+                    </div>
+                `;
+                return;
+            }
+
+            appointmentsList.innerHTML = appointments.map((appointment, index) => `
+                <article class="rounded-lg bg-white p-6 shadow-sm">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="rounded-full bg-[#FFF3E8] px-4 py-1 text-xs font-semibold text-[#BF4100]">
+                            Consulta — ${appointment.specialty}
+                        </span>
+                    </div>
+
+                    <div class="mt-4 divide-y divide-[#F0F0F0]">
+                        <div class="flex gap-3 py-3">
+                            <i data-lucide="paw-print" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                            <div><p class="text-[10px] text-[#777777]">Nome do Animal</p><p class="font-semibold text-[#333333]">${appointment.animal}</p></div>
+                        </div>
+                        <div class="flex gap-3 py-3">
+                            <i data-lucide="stethoscope" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                            <div><p class="text-[10px] text-[#777777]">Veterinário</p><p class="font-semibold text-[#333333]">${appointment.professional}</p></div>
+                        </div>
+                        <div class="flex gap-3 py-3">
+                            <i data-lucide="calendar-days" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                            <div><p class="text-[10px] text-[#777777]">Data</p><p class="font-semibold text-[#333333]">${appointment.date}</p></div>
+                        </div>
+                        <div class="flex gap-3 py-3">
+                            <i data-lucide="clock-3" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                            <div><p class="text-[10px] text-[#777777]">Horário</p><p class="font-semibold text-[#333333]">${appointment.time}</p></div>
+                        </div>
+                        <div class="flex gap-3 py-3">
+                            <i data-lucide="file-text" class="mt-0.5 h-4 w-4 text-[#BF4100]"></i>
+                            <div><p class="text-[10px] text-[#777777]">Protocolo</p><p class="font-semibold text-[#333333]">${appointment.protocol}</p></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 flex gap-3">
+                        <button type="button" data-appointment-index="${index}" class="rounded-lg border border-[#777777] px-5 py-2 font-semibold text-[#555555] transition hover:border-[#BF4100] hover:text-[#BF4100]">Cancelar</button>
+                        <a href="agendamento.html" class="rounded-lg bg-[#BF4100] px-5 py-2 font-semibold text-white transition hover:bg-[#9D3500]">Reagendar</a>
+                    </div>
+                </article>
+            `).join('');
+
+            lucide.createIcons();
+
+            appointmentsList.querySelectorAll('[data-appointment-index]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const appointmentIndex = Number(button.dataset.appointmentIndex);
+                    appointments.splice(appointmentIndex, 1);
+                    localStorage.setItem('goldenpet.appointments', JSON.stringify(appointments));
+                    renderAppointments();
+                });
+            });
+        };
+
+        renderAppointments();
+    </script>
+</body>
+</html>

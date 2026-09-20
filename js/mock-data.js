@@ -125,6 +125,41 @@ window.goldenPetMockData = {
             { id: 'maya', name: 'Maya Santos', specialtyId: 'oftalmologia', specialty: 'Oftalmologista', times: ['10:00', '16:00'] },
             { id: 'renato', name: 'Renato Martins', specialtyId: 'ortopedia', specialty: 'Ortopedista', times: ['09:00', '14:00'] },
             { id: 'juliana', name: 'Juliana Rocha', specialtyId: 'odontologia', specialty: 'Odontologista veterinária', times: ['11:00', '15:00'] }
+        ],
+        '2026-08-02': [
+            { id: 'lucas', name: 'Lucas Almeida', specialtyId: 'clinico-geral', specialty: 'Clínico geral', times: ['08:30', '12:00'] },
+            { id: 'carla', name: 'Carla Mendes', specialtyId: 'dermatologia', specialty: 'Dermatologista', times: ['14:00', '16:30'] },
+            { id: 'beatriz', name: 'Beatriz Costa', specialtyId: 'cardiologia', specialty: 'Cardiologista', times: ['09:30', '15:00'] }
+        ],
+        '2026-08-03': [
+            { id: 'maya', name: 'Maya Santos', specialtyId: 'oftalmologia', specialty: 'Oftalmologista', times: ['09:00', '13:30'] },
+            { id: 'renato', name: 'Renato Martins', specialtyId: 'ortopedia', specialty: 'Ortopedista', times: ['10:00', '16:00'] },
+            { id: 'juliana', name: 'Juliana Rocha', specialtyId: 'odontologia', specialty: 'Odontologista veterinária', times: ['11:30', '17:00'] }
+        ],
+        '2026-08-04': [
+            { id: 'otavio', name: 'Otávio Silva', specialtyId: 'oftalmologia', specialty: 'Oftalmologista', times: ['08:00', '14:30'] },
+            { id: 'lucas', name: 'Lucas Almeida', specialtyId: 'clinico-geral', specialty: 'Clínico geral', times: ['10:30', '15:30'] },
+            { id: 'carla', name: 'Carla Mendes', specialtyId: 'dermatologia', specialty: 'Dermatologista', times: ['09:30', '13:00'] }
+        ],
+        '2026-08-05': [
+            { id: 'beatriz', name: 'Beatriz Costa', specialtyId: 'cardiologia', specialty: 'Cardiologista', times: ['08:30', '14:00'] },
+            { id: 'renato', name: 'Renato Martins', specialtyId: 'ortopedia', specialty: 'Ortopedista', times: ['11:00', '16:30'] },
+            { id: 'juliana', name: 'Juliana Rocha', specialtyId: 'odontologia', specialty: 'Odontologista veterinária', times: ['09:00', '15:00'] }
+        ],
+        '2026-08-06': [
+            { id: 'maya', name: 'Maya Santos', specialtyId: 'oftalmologia', specialty: 'Oftalmologista', times: ['10:00', '16:00'] },
+            { id: 'lucas', name: 'Lucas Almeida', specialtyId: 'clinico-geral', specialty: 'Clínico geral', times: ['09:30', '13:30'] },
+            { id: 'beatriz', name: 'Beatriz Costa', specialtyId: 'cardiologia', specialty: 'Cardiologista', times: ['11:00', '17:00'] }
+        ],
+        '2026-08-07': [
+            { id: 'carla', name: 'Carla Mendes', specialtyId: 'dermatologia', specialty: 'Dermatologista', times: ['08:30', '12:30'] },
+            { id: 'renato', name: 'Renato Martins', specialtyId: 'ortopedia', specialty: 'Ortopedista', times: ['10:00', '15:30'] },
+            { id: 'juliana', name: 'Juliana Rocha', specialtyId: 'odontologia', specialty: 'Odontologista veterinária', times: ['13:00', '16:30'] }
+        ],
+        '2026-08-08': [
+            { id: 'otavio', name: 'Otávio Silva', specialtyId: 'oftalmologia', specialty: 'Oftalmologista', times: ['09:00', '14:00'] },
+            { id: 'lucas', name: 'Lucas Almeida', specialtyId: 'clinico-geral', specialty: 'Clínico geral', times: ['10:30', '16:00'] },
+            { id: 'beatriz', name: 'Beatriz Costa', specialtyId: 'cardiologia', specialty: 'Cardiologista', times: ['11:30', '15:00'] }
         ]
     },
     completedServices: [
